@@ -159,21 +159,22 @@ add_message = function(settings) {
 
 parse_smilies = function(message) {
   var smilies = {
+    ">:/": "angry.png",
+    "?:(": "confused.png",    
     ":p": "yuck.png",
     ":P": "yuck.png",
     ":D": "laugh.png",
     ":)": "smile.png",
     ":o": "gasp.png",
     ":O": "gasp.png",
-    ":(": "sad.png",
-    ">:/": "angry.png",
-    "?:(": "confused.png",    
+    ":(": "sad.png",    
     ":/": "slant.png",
     ":|": "disheartened.png",
     "-_-": "ambivalent.png",
     ";(": "cry.png",      
     ";)": "naughty.png",
-    "8-)": "nerd.png"
+    "8-)": "nerd.png",
+    ":L": "crazy.png"
   };
 
   for (var i in smilies) {
