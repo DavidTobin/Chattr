@@ -127,6 +127,9 @@ system_message = function(message) {
 
 add_message = function(settings) {  
   if (typeof(settings.client) === 'undefined' || settings.client === false) {
+    // Parse smilies
+    settings.message = parse_smilies(settings.message);
+
     // Save messages
     if (messages.length > 1500) {
       message.shift();
@@ -152,6 +155,28 @@ add_message = function(settings) {
       });
     }
   }
+},
+
+parse_smilies = function(message) {
+  var smilies = {
+    ":p": "just-like-that.png",
+    ":P": "just-like-that.png",
+    ":D": "great.png",
+    ":)": "nice.png",
+    ":o": "omg.png",
+    ":O": "omg.png",
+    ":(": "sad.png",
+    "o:)": "angel.png",
+    ":/": "awww.png",
+    ":|": "disheartened.png",
+    "xD": "exstatic.png",
+  };
+
+  for (var i in smilies) {
+    message = message.replace(i, ["<img src=\"./images/", smilies[i], "\" />"].join(""));
+  }
+
+  return message;
 },
 
 process_command = function(data, socket) {
