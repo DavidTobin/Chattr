@@ -163,7 +163,7 @@ parse_smilies = function(message) {
     "?:(": "confused.png",    
     ":p": "yuck.png",
     ":P": "yuck.png",
-    ":D": "grin.png",
+    ":D": "laugh.png",
     ":)": "smile.png",
     ":o": "gasp.png",
     ":O": "gasp.png",
@@ -174,7 +174,6 @@ parse_smilies = function(message) {
     ";(": "cry.png",      
     ";)": "naughty.png",
     "8-)": "nerd.png",
-    ":L": "laugh.png"
   };
 
   for (var i in smilies) {
