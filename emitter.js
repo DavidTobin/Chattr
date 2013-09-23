@@ -1,7 +1,8 @@
 var app = require('express')()
   , server = require('http').createServer(app)
   , io = require('socket.io').listen(server)
-  , sleep = require('sleep');
+  , sleep = require('sleep')
+  , marked = required('marked');
 
 server.listen(3003);
 
@@ -50,7 +51,7 @@ io.sockets.on('connection', function (socket) {
       return true;
     }
 
-    data.message = escapeHTML(data.message);
+    data.message = marked(data.message);
 
     socket.get('name', function(error, name) {      
       data.name = name;

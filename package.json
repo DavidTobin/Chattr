@@ -10,6 +10,7 @@
     "jade": "*",
     "socket.io": "*",
     "moment": "*",
-    "sleep": "*"
+    "sleep": "*",
+    "marked": "~0.2.9"
   }
 }
