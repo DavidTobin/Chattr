@@ -43,14 +43,14 @@ io.sockets.on('connection', function (socket) {
     system_message([name, "has come online"].join(" "));
   }    
 
-  socket.on('send_message', function (data) {
-    data.message = escapeHTML(data.message);
-
+  socket.on('send_message', function (data) {    
     if (data.message[0] === '/') {
       process_command(data, socket);
 
       return true;
-    }    
+    }
+
+    data.message = escapeHTML(data.message);
 
     socket.get('name', function(error, name) {      
       data.name = name;
