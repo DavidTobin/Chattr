@@ -163,22 +163,24 @@ parse_smilies = function(message) {
     "?:(": "confused.png",    
     ":p": "yuck.png",
     ":P": "yuck.png",
-    ":D": "laugh.png",
+    ":D": "grin.png",
     ":)": "smile.png",
     ":o": "gasp.png",
     ":O": "gasp.png",
-    ":(": "sad.png",    
+    ":(": "frown.png",    
     ":/": "slant.png",
     ":|": "disheartened.png",
     "-_-": "ambivalent.png",
     ";(": "cry.png",      
     ";)": "naughty.png",
     "8-)": "nerd.png",
-    ":L": "crazy.png"
+    ":L": "laugh.png"
   };
 
   for (var i in smilies) {
-    message = message.replace(i, ["<img src=\"./images/", smilies[i], "\" />"].join(""));
+    var i_esc = escapeHTML(i);
+
+    message = message.replace(i_esc, ["<img src=\"./images/", smilies[i], "\" />"].join(""));
   }
 
   return message;
