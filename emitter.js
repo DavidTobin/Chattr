@@ -44,6 +44,8 @@ io.sockets.on('connection', function (socket) {
   }    
 
   socket.on('send_message', function (data) {
+    data.message = escapeHTML(data.message);
+
     if (data.message[0] === '/') {
       process_command(data, socket);
 
@@ -159,6 +161,21 @@ process_command = function(data, socket) {
   }
 
     return true;  
+},
+
+entityMap = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': '&quot;',
+  "'": '&#39;',
+  "/": '&#x2F;'
+},
+
+escapeHTML = function(string) {
+  return String(string).replace(/[&<>"'\/]/g, function (s) {
+    return entityMap[s];
+  });
 };
 
 var commands = {};

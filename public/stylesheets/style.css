@@ -133,6 +133,8 @@ hr {
   font-family: "Open Sans", sans-serif;
   font-size: 14px;
   margin-top: 5px;
+  overflow-wrap: break-word;
+  white-space: pre;
 }
 
 .messages ul > li.system {
