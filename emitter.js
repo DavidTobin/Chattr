@@ -8,6 +8,7 @@ server.listen(3003);
 
 var online_users  = [],
     online_names  = {},
+    avatars       = {},
     messages      = [],
     online_count  = 0;
 
@@ -106,10 +107,12 @@ io.sockets.on('connection', function (socket) {
 });
 
 var set_online = function(socket) {
+  console.log(avatars);
   io.sockets.emit('online', {
     online: online_names,
     count: online_count,
-    new_user: online_names[socket.id]
+    new_user: online_names[socket.id],
+    avatar: (avatars[online_names[socket.id]] || null)
   });
 },
 
@@ -196,8 +199,6 @@ process_command = function(data, socket) {
   // Remove "/"
   command = command.substring(1);
 
-  console.log(command, commandmsg, data);
-
   if (command.length > 1) {
     if (typeof(commands[command + '_command']) !== 'undefined') {
       commands[command + '_command'].apply(commandmsg);
@@ -242,4 +243,12 @@ commands.beep_command = function() {
   });      
 
   system_message('Beeeeeep.....');
+}
+
+commands.avatar_command = function() {
+  if (typeof(this[1]) !== 'undefined') {
+    avatars[online_names[this[0].id]] = ["http://avatars.io/facebook/", this[1]].join("");
+
+    set_online(this[0]);    
+  }
 }

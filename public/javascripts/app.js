@@ -101,9 +101,12 @@ function Chattr() {
     socket.on('online', function(data) {      
       $('.online-users > ul').empty();
       
-      for (var i in data.online) {
+      for (var i in data.online) {        
+        data.avatar = data.avatar !== null ? data.avatar = ['<img src="', data.avatar, '" class="avatar" />'].join("") : "";        
+
         $('.online-users > ul').append([
           '<li>',
+          data.avatar,
           '<span id="' + data.online[i] + '">',
           data.online[i],
           '</span>',
