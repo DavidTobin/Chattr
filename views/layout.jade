@@ -1,0 +1,15 @@
+doctype 5
+html
+  head
+    title= title
+    link(href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700", rel='stylesheet')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .alert
+      | Hello World
+
+    .container  
+      block content
+
+    script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js")
+    script(src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
