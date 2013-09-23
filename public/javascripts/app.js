@@ -3,6 +3,8 @@ function Chattr() {
   this.name     = null;
   this.messages = $('.messages > ul');
   this.ctx      = null;
+  this.typing   = null;
+  this.isTyping = false;
 
   this.init = function() {  
     var _this = this;
@@ -65,6 +67,14 @@ function Chattr() {
       return false;
     });
 
+    $('.message-input input').keyup(function() {
+      if (_this.isTyping === false) {
+       socket.emit('type', {});
+      }
+
+      _this.isTyping = true;
+    });
+
     socket.on('message', function(data) {  
       if (data.name !== _this.name) { 
         //_this.beep(100, 2);
@@ -84,7 +94,7 @@ function Chattr() {
 
         _this.messages.animate({
           scrollTop: _this.messages[0].scrollHeight
-        }, 200);
+        }, 20);
       }
     });
 
@@ -122,6 +132,28 @@ function Chattr() {
 
       _this.show_alert(data.message);      
     });
+
+    socket.on('typing', function(data) {
+      // Clear any timeout
+      if (typeof(_this.typing) !== 'null') {
+        clearTimeout(_this.typing);
+
+        _this.typing = null;
+      }
+
+      if (data.name !== _this.name) {
+        $('.messages-info').html([data.name, "is typing..."].join(" "));
+      }
+
+      _this.typing = window.setTimeout(function() {        
+        $('.messages-info').html("");
+        _this.isTyping = false;
+      }, 2000);
+    });
+
+    window.setInterval(function() {
+      console.log(_this.typing, _this.isTyping);
+    }, 1000);
   }
 
   this.set_cookie = function(settings) {

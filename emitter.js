@@ -62,9 +62,21 @@ io.sockets.on('connection', function (socket) {
     });    
   });
 
+  socket.on('type', function(data) {
+    io.sockets.emit('typing', {
+      name: (online_names[socket.id] || socket.id)
+    });
+  });
+
   socket.on('set name', function(data) {
     if (typeof(data.name) !== 'undefined' && data.name.toLowerCase() === 'system') {
       show_error("SYSTEM is a forbidden name.", socket);
+
+      return false;
+    }
+
+    if (typeof(data.name) === 'undefined' || data.name.length < 3) {
+      show_error("Your name must be at least 3 characters.");
 
       return false;
     }
