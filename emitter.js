@@ -187,7 +187,11 @@ commands.clear_command = function() {
   system_message(['Messages have been cleared by', online_names[this[0].id]].join(" "));
 },
 
-commands.beep_command = function() {    
+commands.beep_command = function() {  
+  if (+this[1] > 2500) {
+    this[1] = 2500;
+  }
+
   io.sockets.emit('beep', {
     duration: (+this[1] || 500),
     type: 2
