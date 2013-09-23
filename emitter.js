@@ -1,6 +1,7 @@
 var app = require('express')()
   , server = require('http').createServer(app)
-  , io = require('socket.io').listen(server);
+  , io = require('socket.io').listen(server)
+  , sleep = require('sleep');
 
 server.listen(3002);
 
@@ -12,79 +13,57 @@ var online_users  = [],
 io.sockets.on('connection', function (socket) {
   online_count++;
 
+  // Send current messages to client on connect
   if (messages.length) {
     for (var i in messages) {
       socket.emit('message', messages[i]);
     }
   }
+  
+  // Set default name
+  online_names[socket.id] = socket.id;  
 
-  var online = false;
-  for (var i in online_users) {
-    if (online_users[i] === socket.id) {
-      online = true;
-    }        
-  }  
+  // Check for name
+  var name = null;
+  var cookies = (socket.handshake.headers.cookie + "").split('; ')   
+  for (var i in cookies) {
+    var cookie  = cookies[i].split('='),
+        cname    = cookie[0],
+        value   = cookie[1];
 
-  if (online === false) {
-    online_users.push(socket.id);
-    online_names[socket.id] = socket.id;
-
-    set_online(socket);
-
-    // Check for name
-    var name = null;
-    var cookies = (socket.handshake.headers.cookie + "").split('; ')   
-    for (var i in cookies) {
-      var cookie  = cookies[i].split('='),
-          cname    = cookie[0],
-          value   = cookie[1];
-
-      if (cname === 'nickname') {
-        name = value;
-        online_names[socket.id] = value;
-      }       
-    }
-
-    if (typeof(name) === undefined || name === null) {
-      system_message([socket.id, "has come online"].join(" "));
-    } else {
-      system_message([name, "has come online"].join(" "));
-    }    
+    if (cname === 'nickname') {
+      name = value;
+      online_names[socket.id] = value;
+    }       
   }
 
-  socket.on('send_message', function (data) { 
-    if (data.message === '/clear') {
-      messages = [];
+  if (typeof(name) === undefined || name === null) {
+    system_message([socket.id, "has come online"].join(" "));
+  } else {
+    system_message([name, "has come online"].join(" "));
+  }    
 
-      io.sockets.emit('clear_messages');
-      system_message(['Messages have been cleared by', online_names[socket.id]].join(" "));
+  socket.on('send_message', function (data) {
+    if (data.message[0] === '/') {
+      process_command(data, socket);
 
       return true;
-    }
+    }    
 
     socket.get('name', function(error, name) {      
       data.name = name;
-    });
+    });    
 
-    if (messages.length > 1500) {
-      message.shift();
-    }
-
-    messages.push({
+    add_message({
       name: (data.name || this.id),
-      message: data.message,
-      date: +new Date()
-    });
-
-    io.sockets.emit('message', {
-      name: (data.name || this.id),
-      message: data.message,
-      date: +new Date()
+      message: data.message
     });    
   });
 
   socket.on('set name', function(data) {
     if (typeof(data.name) !== 'undefined' && data.name.toLowerCase() === 'system') {
+      show_error("SYSTEM is a forbidden name.", socket);
+
       return false;
     }
 
@@ -119,20 +98,83 @@ var set_online = function(socket) {
   });
 },
 
+show_error = function(message, socket) {
+  socket.emit('show error', {
+    message: message
+  });
+},
+
 system_message = function(message) {
-  if (messages.length > 1500) {
-    message.shift();
+  add_message({  
+    name: 'SYSTEM', 
+    message: message    
+  });
+},
+
+add_message = function(settings) {  
+  if (typeof(settings.client) === 'undefined' || settings.client === false) {
+    // Save messages
+    if (messages.length > 1500) {
+      message.shift();
+    }
+
+    messages.push({
+      name: settings.name,
+      message: settings.message,
+      date: +new Date()
+    });
+
+    io.sockets.emit('message', {
+      name: settings.name,
+      message: settings.message,
+      date: +new Date()
+    });
+  } else {
+    if (typeof(settings.socket) !== 'undefined') {
+      socket.emit('message', {
+        name: settings.name,
+        message: settings.message,
+        date: +new Date()
+      });
+    }
+  }
+},
+
+process_command = function(data, socket) {
+  var commandmsg = data.message.split(" "),
+      command  = commandmsg[0];
+
+  commandmsg.shift();
+  commandmsg.unshift(socket);
+
+  // Remove "/"
+  command = command.substring(1);
+
+  console.log(command, commandmsg, data);
+
+  if (command.length > 1) {
+    if (typeof(commands[command + '_command']) !== 'undefined') {
+      commands[command + '_command'].apply(commandmsg);
+    }    
   }
 
-  messages.push({
-    name: 'SYSTEM',
-    message: message,
-    date: +new Date()
-  });
+    return true;  
+};
 
-  io.sockets.emit('message', {
-    name: 'SYSTEM', 
-    message: message,
-    date: +new Date()
-  });
+var commands = {};
+
+commands.clear_command = function() {
+  messages = [];
+
+  io.sockets.emit('clear_messages');
+  system_message(['Messages have been cleared by', online_names[this[0].id]].join(" "));
+},
+
+commands.beep_command = function() {    
+  io.sockets.emit('beep', {
+    duration: (+this[1] || 500),
+    type: 2
+  });      
+
+  system_message('Beeeeeep.....');
 }

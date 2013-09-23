@@ -32,6 +32,12 @@ hr {
   opacity: 0;
 }
 
+.error {
+  background: #CE5252;
+  color: #fff;
+  border: 1px solid #D13232;
+}
+
 .container {
   width: 960px;
   margin: 50px auto;
@@ -86,7 +92,7 @@ hr {
   vertical-align: top;  
   margin: 0;
   margin-right: -4px;
-  padding: 5px 10px;
+  padding: 5px;
 }
 
 .online-list {
@@ -95,11 +101,12 @@ hr {
 }
 
 .messages-container {
-  width: 724px;  
+  width: 724px;
+  padding: 5px 15px;  
 }
 
 .messages-container input {
-  width: 100%;
+  width: 95%;
   height: 35px;
   padding: 10px;
   border: none;

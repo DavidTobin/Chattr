@@ -2,12 +2,17 @@ function Chattr() {
   this.socket   = null;
   this.name     = null;
   this.messages = $('.messages > ul');
-  //this.ctx      = new(window.audioContext || window.webkitAudioContext);
+  this.ctx      = null;
 
   this.init = function() {  
     var _this = this;
 
     this.socket = io.connect('http://localhost:3002');
+
+    // Create audio if we can
+    if (typeof(window.audioContext) !== 'undefined' || typeof(window.webkitAudioContext) !== 'undefined') {
+      _this.ctx = new(window.audioContext || window.webkitAudioContext);
+    }
 
     // Check if we have a name
     var nickname = this.get_cookie('nickname');
@@ -24,15 +29,19 @@ function Chattr() {
     $('#set-name').submit(function() {
       _this.name = $(".login-as input").val();
 
+      $(".login-as input").val("")
+
       socket.emit('set name', {
         name: _this.name
       });
 
-      _this.set_cookie({
-        name: 'nickname',
-        value: _this.name,
-        expires: (60 * 60 * 24)
-      });
+      if (_this.name.toLowerCase() !== 'system') {      
+        _this.set_cookie({
+          name: 'nickname',
+          value: _this.name,
+          expires: (60 * 60 * 24)
+        });
+      }
 
       return false;
     });
@@ -103,6 +112,16 @@ function Chattr() {
     socket.on('clear_messages', function() {
       $('.messages > ul').empty();
     });
+
+    socket.on('beep', function(data) {      
+      _this.beep(data.duration, data.type);
+    });
+
+    socket.on('show error', function(data) {
+      $('.alert').addClass('error');
+
+      _this.show_alert(data.message);      
+    });
   }
 
   this.set_cookie = function(settings) {
@@ -168,10 +187,13 @@ function Chattr() {
     }, 500, function() {
       window.setTimeout(function() {
         $('.alert').html("");
+
         $('.alert').animate({
           height: '0px',
           opacity: 0
-        }, 500);
+        }, 500, function() {
+          $('.alert').removeClass('error');
+        });        
       }, 2500);      
     });
   }
