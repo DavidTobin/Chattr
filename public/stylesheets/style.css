@@ -142,7 +142,11 @@ hr {
   font-weight: bold;
 }
 
-.messages ul > li > strong.time {
+.messages ul > li > p {
+  display: inline;
+}
+
+.messages ul > li strong.time {
   color: #aaa !important;
   font-size: 12px !important;
   margin-right: 20px;

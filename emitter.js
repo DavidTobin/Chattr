@@ -2,7 +2,7 @@ var app = require('express')()
   , server = require('http').createServer(app)
   , io = require('socket.io').listen(server)
   , sleep = require('sleep')
-  , marked = required('marked');
+  , marked = require('marked');
 
 server.listen(3003);
 
