@@ -31,7 +31,7 @@ io.sockets.on('connection', function (socket) {
         cname    = cookie[0],
         value   = cookie[1];
 
-    if (cname === 'nickname') {
+    if (cname === '3003_nickname') {
       name = value;
       online_names[socket.id] = value;
     }       
