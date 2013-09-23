@@ -3,7 +3,7 @@ var app = require('express')()
   , io = require('socket.io').listen(server)
   , sleep = require('sleep');
 
-server.listen(3002);
+server.listen(3003);
 
 var online_users  = [],
     online_names  = {},
@@ -159,17 +159,21 @@ add_message = function(settings) {
 
 parse_smilies = function(message) {
   var smilies = {
-    ":p": "just-like-that.png",
-    ":P": "just-like-that.png",
-    ":D": "great.png",
-    ":)": "nice.png",
-    ":o": "omg.png",
-    ":O": "omg.png",
+    ":p": "yuck.png",
+    ":P": "yuck.png",
+    ":D": "laugh.png",
+    ":)": "smile.png",
+    ":o": "gasp.png",
+    ":O": "gasp.png",
     ":(": "sad.png",
-    "o:)": "angel.png",
-    ":/": "awww.png",
+    ">:/": "angry.png",
+    "?:(": "confused.png",    
+    ":/": "slant.png",
     ":|": "disheartened.png",
-    "xD": "exstatic.png",
+    "-_-": "ambivalent.png",
+    ";(": "cry.png",      
+    ";)": "naughty.png",
+    "8-)": "nerd.png"
   };
 
   for (var i in smilies) {

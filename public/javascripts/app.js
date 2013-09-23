@@ -9,7 +9,7 @@ function Chattr() {
   this.init = function() {  
     var _this = this;
 
-    this.socket = io.connect(["http://", window.location.hostname, ":3002"].join(""));
+    this.socket = io.connect(["http://", window.location.hostname, ":3003"].join(""));
 
     // Create audio if we can
     if (typeof(window.audioContext) !== 'undefined' || typeof(window.webkitAudioContext) !== 'undefined') {
