@@ -152,6 +152,9 @@ hr {
   color: #aaa;
   font-weight: 300;
   font-family: "Open Sans", sans-serif;
+  margin: 5px 0;
+  padding-left: 10px;
+  font-size: 14px;
 }
 
 .online-list h2 {

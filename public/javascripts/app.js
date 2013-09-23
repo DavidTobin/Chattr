@@ -9,7 +9,7 @@ function Chattr() {
   this.init = function() {  
     var _this = this;
 
-    this.socket = io.connect('http://localhost:3002');
+    this.socket = io.connect(["http://", window.location.hostname, ":3002"].join(""));
 
     // Create audio if we can
     if (typeof(window.audioContext) !== 'undefined' || typeof(window.webkitAudioContext) !== 'undefined') {
@@ -76,8 +76,8 @@ function Chattr() {
     });
 
     socket.on('message', function(data) {  
-      if (data.name !== _this.name) { 
-        //_this.beep(100, 2);
+      if (data.name !== _this.name && data.name.toLowerCase() !== 'system') { 
+        _this.beep(50, 2);
       }
 
       if (typeof(data.message) !== 'undefined') {
@@ -146,14 +146,10 @@ function Chattr() {
       }
 
       _this.typing = window.setTimeout(function() {        
-        $('.messages-info').html("");
+        $('.messages-info').html(" ");
         _this.isTyping = false;
       }, 2000);
     });
-
-    window.setInterval(function() {
-      console.log(_this.typing, _this.isTyping);
-    }, 1000);
   }
 
   this.set_cookie = function(settings) {
@@ -161,10 +157,14 @@ function Chattr() {
 
     var expires = +new Date() + settings.expires;
 
+    settings.name = [window.location.port, settings.name].join("_");
+
     document.cookie = settings.name + "=" + settings.value + ";expires=" + expires + "; path=/";
   }
 
   this.get_cookie = function(c_name) {
+    c_name = [window.location.port, c_name].join("_");
+
     if (document.cookie.length > 0) {
       var c_start, c_end;
 
