@@ -10,7 +10,8 @@ var online_users  = [],
     online_names  = {},
     avatars       = {},
     messages      = [],
-    online_count  = 0;
+    online_count  = 0,
+    new_user      = null;
 
 io.sockets.on('connection', function (socket) {
   online_count++;
@@ -41,9 +42,15 @@ io.sockets.on('connection', function (socket) {
 
   if (typeof(name) === undefined || name === null) {
     system_message([socket.id, "has come online"].join(" "));
+
+    new_user = socket.id;
   } else {
     system_message([name, "has come online"].join(" "));
+
+    new_user = name;
   }    
+
+  set_online(socket);
 
   socket.on('send_message', function (data) {    
     if (data.message[0] === '/') {
@@ -106,14 +113,15 @@ io.sockets.on('connection', function (socket) {
   });
 });
 
-var set_online = function(socket) {
-  console.log(avatars);
+var set_online = function(socket) {  
   io.sockets.emit('online', {
     online: online_names,
     count: online_count,
-    new_user: online_names[socket.id],
-    avatar: (avatars[online_names[socket.id]] || null)
+    new_user: new_user,
+    avatars: avatars
   });
+
+  new_user = null;
 },
 
 show_error = function(message, socket) {

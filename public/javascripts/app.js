@@ -98,13 +98,14 @@ function Chattr() {
       }
     });
 
-    socket.on('online', function(data) {      
+    socket.on('online', function(data) {   
+      console.log(data);   
       $('.online-users > ul').empty();
       
       for (var i in data.online) {
         var avatar = "";
-        if (data.avatar !== null) {      
-          avatar = ['<img src="', data.avatar, '" class="avatar" />'].join("");        
+        if (typeof(data.avatars[data.online[i]]) !== 'undefined') {      
+          avatar = ['<img src="', data.avatars[data.online[i]], '" class="avatar" />'].join("");        
         }
 
         $('.online-users > ul').append([
@@ -120,7 +121,7 @@ function Chattr() {
       $('#online-count').html(['(', data.count, ')'].join(""));
 
       // New user
-      if (typeof(data.new_user) !== 'undefined') {
+      if (typeof(data.new_user) !== 'undefined' && data.new_user !== null) {
         _this.show_alert([data.new_user, 'has come online!'].join(" "));
       }
     });
