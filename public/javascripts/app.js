@@ -102,7 +102,7 @@ function Chattr() {
       $('.online-users > ul').empty();
       
       for (var i in data.online) {        
-        data.avatar = data.avatar !== null ? data.avatar = ['<img src="', data.avatar, '" class="avatar" />'].join("") : "";        
+        data.avatar = data.avatar !== null ? ['<img src="', data.avatar, '" class="avatar" />'].join("") : "";        
 
         $('.online-users > ul').append([
           '<li>',
